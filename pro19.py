@@ -21,20 +21,19 @@ while True:
 
     if results.multi_hand_landmarks:
         for hand_landmark in results.multi_hand_landmarks:
-            #accessing the landmarks by their position
+          
             lm_list=[]
             for id ,lm in enumerate(hand_landmark.landmark):
                 lm_list.append(lm)
 
-            #array to hold true or false if finger is folded    
+              
             finger_fold_status =[]
             for tip in finger_tips:
-                #getting the landmark tip position and drawing blue circle
+               
                 x,y = int(lm_list[tip].x*w), int(lm_list[tip].y*h)
                 cv2.circle(img, (x,y), 15, (255, 0, 0), cv2.FILLED)
 
-                #writing condition to check if finger is folded i.e checking if finger tip starting value is smaller than finger starting position which is inner landmark. for index finger    
-                #if finger folded changing color to green
+                
                 if lm_list[tip].x < lm_list[tip - 3].x:
                     cv2.circle(img, (x,y), 15, (0, 255, 0), cv2.FILLED)
                     finger_fold_status.append(True)
@@ -43,19 +42,17 @@ while True:
 
             print(finger_fold_status)
 
-             #checking if all fingers are folded
+             
             if all(finger_fold_status):
-                # take a screenshot of the screen and store it in memory, then
-                # convert the PIL/Pillow image to an OpenCV compatible NumPy array
-                # and finally write the image to disk
+                
                 image = pyautogui.screenshot()
                 image = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
                 cv2.imwrite("in_memory_to_disk.png", image)
 
-                # this time take a screenshot directly to disk
+               
                 pyautogui.screenshot("straight_to_disk.png")
 
-                # we can then load our screenshot from disk in OpenCV format
+               
                 image = cv2.imread("straight_to_disk.png")
                 cv2.imshow("Screenshot", imutils.resize(image, width=600))
 
